@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 public class voteDVD  {
 	
 		
-	public static void main(String[] args) {
+	public static void makeVote(String[] args) {
 
 
 		formatInputFile(args);

@@ -113,7 +113,7 @@ public class AlloParser {
 			garbage = garbage[1].toString().split("\"");
 			System.out.println("Film: "+ garbage[0] + "\n");
 
-			//Get Real			
+			//Get Director			
 			garbage = list.toString().split("<meta property=\"video:director\" content=\"");
 			garbage = garbage[1].toString().split("\"");
 			System.out.println("Realisateur: "+ garbage[0] + "\n");
@@ -139,7 +139,7 @@ public class AlloParser {
 			System.out.println("Image: "+ garbage[0] + "\n");
 
 			
-			//Get Casting	
+			//Get Cast
 			garbage = list2.toString().split("<span class=\"light\">Avec</span>");
 			garbage = garbage[1].toString().split("</div>");
 			garbage = garbage[0].toString().split("class=\"blue-link\">");	
@@ -152,10 +152,48 @@ public class AlloParser {
 			
 			
 			//Get STARS !!!! TODO	
-
+			garbage = list2.toString().split("<span class=\"stareval-note\">");
+			garbage = garbage[1].toString().split("</span>");
+			System.out.println("Stars Press: "+ actors[0]);
+			
 			
 			
 	
+	}
+	
+	public static String getYear(String titreSearch) {
+		
+		//TODO
+		
+		return "todo";
+	}
+	
+	public static String getGenre(String titreSearch) {
+
+		//TODO
+		
+				return "todo";
+	}
+	
+	public static String getDirector(String titreSearch) {
+
+		//TODO
+		
+		return "todo";
+	}
+	
+	public static String getCast(String titreSearch) {
+
+		//TODO
+		
+		return "todo";
+	}
+	
+	public static String getStars(String titreSearch) {
+
+		//TODO
+		
+		return "todo";
 	}
 	
 	
