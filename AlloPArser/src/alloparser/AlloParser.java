@@ -23,7 +23,7 @@ public class AlloParser {
 		
 		String urlFilm;
 		
-		urlFilm = getUrl("Jurassic World 2");
+		urlFilm = getUrl("Persepolis");
 		
 		
 		getInfo(urlFilm);
@@ -152,12 +152,20 @@ public class AlloParser {
 			
 			
 			//Get STARS !!!! TODO	
+			//Press
 			garbage = list2.toString().split("<span class=\"stareval-note\">");
 			garbage = garbage[1].toString().split("</span>");
-			System.out.println("Stars Press: "+ actors[0]);
+			System.out.println("Stars Press: "+ garbage[0]);
+			//Spectators
+			garbage = list2.toString().split("<span class=\"stareval-note\" itemprop=\"ratingValue\" content=\"");
+			garbage = garbage[1].toString().split("\">");
+			System.out.println("Stars Spectators: "+ garbage[0]);
+			
+			 
+			//test
 			
 			
-			
+			 
 	
 	}
 	
@@ -196,5 +204,11 @@ public class AlloParser {
 		return "todo";
 	}
 	
+	public static String getVersion(String titreSearch) {
+
+		//TODO
+		
+		return "todo";
+	}
 	
 }

@@ -11,7 +11,10 @@ public class voteDVD  {
 	public static void makeVote(String[] args) {
 
 
+		//Put Film name in txt resume
 		formatInputFile(args);
+		
+		//Create Html from txt resume
 		generateHTML(args);
 
 		

@@ -19,7 +19,9 @@ public class Main {
 
 		//getInfo("http://www.allocine.fr/film/fichefilm_gen_cfilm=143692.html");
 			
-		
+		  
+
+		AlloParser.getDirector(urlFilm);
 		
 	}
 	
