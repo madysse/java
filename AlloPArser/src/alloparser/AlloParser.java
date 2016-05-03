@@ -1,13 +1,13 @@
 package alloparser;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.Normalizer;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
@@ -19,7 +19,7 @@ public class AlloParser {
 	/**
 	* Main method for running the HelloWorld demo.
 	*/
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		String urlFilm;
 		
@@ -33,23 +33,38 @@ public class AlloParser {
 		
 		
 	}
+	*/
 	
 	public static String getUrl(String titreSearch) {
 	
 
 		Document doc = null;
-		String garbage[], titre;
+		String garbage[], titre, titreFirstElement[];
 		
 		
 		titre = titreSearch;
+		titreFirstElement = titre.split(" ");
+		System.out.println("Titre: "+ titre);
 		//replace space by + for search bar 
-		titreSearch.replace(" ", "+");
+		titreSearch = removeAccent(titreSearch);
+		titreSearch = titreSearch.replace(" ", "+");
+		try {
+			URLEncoder.encode(titreSearch, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println("titreSearch: "+ titreSearch);
+		System.out.println("titreFirstElement: "+ titreFirstElement[0]);
 		
-		
-		String urlSearch = "http://www.allocine.fr/recherche/?q=" + titre;
+		//Configure url of the film that we looking for on Allocine webpage
+		String urlSearch = "http://www.allocine.fr/recherche/?q=" + titreSearch;
 		String urlFound;
 		System.out.println("Url: "+ urlSearch);
 		
+		//Set Proxy parameters Oberthur (see at end of http://wpad/wpad.dat)
+		System.setProperty("http.proxyHost", "10.200.128.20");
+	    System.setProperty("http.proxyPort", "8080");
 		
 		try {
 			
@@ -66,13 +81,13 @@ public class AlloParser {
 
 		//System.out.println("Cite: "+ list.toString() + "\n");
 		
-		//Get Url			
-		garbage = list.toString().split("alt=\""+titre+"\"");
-		garbage = garbage[1].toString().split("<b>"+titre+"</b>");		
+		//Get Url				
+		garbage = list.toString().split("alt=\"");		
+		garbage = garbage[1].toString().split("<b>"+titreFirstElement[0]);		
 		garbage = garbage[0].toString().split("<a href=\"/film");	
 		garbage = garbage[1].toString().split("\">");
 		
-		System.out.println("TEST 2: http://www.allocine.fr/film"+ garbage[0] + "\n");
+		//System.out.println("TEST 2: http://www.allocine.fr/film"+ garbage[0] + "\n");
 		urlFound = "http://www.allocine.fr/film"+ garbage[0];
 		return urlFound;
 	
@@ -123,15 +138,22 @@ public class AlloParser {
 			garbage = garbage[1].toString().split("</");
 			System.out.println("Genre: "+ garbage[0] + "\n");
 			
-			//Get Année			
+			//Get Year			
 			garbage = list2.toString().split("<span class=\"that\">");
 			garbage = garbage[1].toString().split("</");
 			System.out.println("Année: "+ garbage[0] + "\n");
-			
+						
 			//Get Synopsis			
 			garbage = list2.toString().split("synopsis-txt\" itemprop=\"description\">");
 			garbage = garbage[1].toString().split(" </div>");
-			System.out.println("Resumé: "+ garbage[0] + "\n");
+			garbage = garbage[0].toString().split("\n         ");
+			garbage[1] = garbage[1].replace("\n       ", "");
+			garbage[1] = garbage[1].replace("  ", " ");
+			garbage[1] = garbage[1].replace("<i>", "");
+			garbage[1] = garbage[1].replace("</i>", "");
+			garbage[1] = garbage[1].replace("<br>", "");
+			garbage[1] = garbage[1].replace("</br>", "");
+			System.out.println("Resumé: "+ garbage[1] + "\n");
 			
 			//Get Image URL			
 			garbage = list.toString().split("property=\"og:image\" content=\"");
@@ -140,27 +162,37 @@ public class AlloParser {
 
 			
 			//Get Cast
-			garbage = list2.toString().split("<span class=\"light\">Avec</span>");
-			garbage = garbage[1].toString().split("</div>");
-			garbage = garbage[0].toString().split("class=\"blue-link\">");	
-			actors = garbage[1].toString().split("</span>");	
-			System.out.println("Acteur: "+ actors[0]);
-			actors = garbage[2].toString().split("</span>");
-			System.out.println(", "+ actors[0]);
-			actors = garbage[3].toString().split("</span>");
-			System.out.println(", "+ actors[0]);
+			try{
+				garbage = list2.toString().split("<span class=\"light\">Avec</span>");
+				garbage = garbage[1].toString().split("</div>");
+				garbage = garbage[0].toString().split("class=\"blue-link\">");	
+				actors = garbage[1].toString().split("</span>");	
+				System.out.println("Acteur: "+ actors[0]);
+				actors = garbage[2].toString().split("</span>");
+				System.out.println(", "+ actors[0]);
+				actors = garbage[3].toString().split("</span>");
+				System.out.println(", "+ actors[0]);
+			}catch (ArrayIndexOutOfBoundsException  e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
 			
 			
 			//Get STARS !!!! TODO	
-			//Press
-			garbage = list2.toString().split("<span class=\"stareval-note\">");
-			garbage = garbage[1].toString().split("</span>");
-			System.out.println("Stars Press: "+ garbage[0]);
-			//Spectators
-			garbage = list2.toString().split("<span class=\"stareval-note\" itemprop=\"ratingValue\" content=\"");
-			garbage = garbage[1].toString().split("\">");
-			System.out.println("Stars Spectators: "+ garbage[0]);
-			
+
+			try{
+				//Press
+				garbage = list2.toString().split("<span class=\"stareval-note\">");
+				garbage = garbage[1].toString().split("</span>");
+				System.out.println("Stars Press: "+ garbage[0]);
+				//Spectators
+				garbage = list2.toString().split("<span class=\"stareval-note\" itemprop=\"ratingValue\" content=\"");
+				garbage = garbage[1].toString().split("\">");
+				System.out.println("Stars Spectators: "+ garbage[0]);
+			}catch (ArrayIndexOutOfBoundsException  e) {
+				// TODO Auto-generated catch block
+				System.out.println("No Stars");
+			}
 			 
 			//test
 			
@@ -169,32 +201,158 @@ public class AlloParser {
 	
 	}
 	
-	public static String getYear(String titreSearch) {
+	public static String getYear(String url) {
 		
-		//TODO
+
+		Document doc = null;
+		String garbage[];
 		
-		return "todo";
+		
+		try {
+			
+			doc = Jsoup.connect(url).timeout(60000).get();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+			Elements  list2 = doc.getElementsByTag("div");
+			
+			//Get Year			
+			garbage = list2.toString().split("<span class=\"that\">");
+			garbage = garbage[1].toString().split("</");
+			return garbage[0];
+
+	
 	}
 	
-	public static String getGenre(String titreSearch) {
+	public static String getGenre(String url) {
 
-		//TODO
+		Document doc = null;
+		String garbage[];
 		
-				return "todo";
+		
+		try {
+			
+			doc = Jsoup.connect(url).timeout(60000).get();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+			Elements  list = doc.getElementsByTag("div");
+			
+			//Get Genre			
+			garbage = list.toString().split("==\"><span itemprop=\"genre\">");
+			garbage = garbage[1].toString().split("</");
+			System.out.println("Genre: "+ garbage[0] + "\n");
+
+			return garbage[0];
 	}
 	
-	public static String getDirector(String titreSearch) {
-
-		//TODO
+	public static String getDirector(String url) {
 		
-		return "todo";
+
+		Document doc = null;
+		String garbage[];
+		
+		
+		try {
+			
+			doc = Jsoup.connect(url).timeout(60000).get();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+			Elements  list = doc.getElementsByTag("meta");
+			
+			//Get Director			
+			garbage = list.toString().split("<meta property=\"video:director\" content=\"");
+			garbage = garbage[1].toString().split("\"");
+			System.out.println("Realisateur: "+ garbage[0] + "\n");
+
+			return garbage[0];
+	
 	}
 	
-	public static String getCast(String titreSearch) {
+	public static String getSynopsis(String url) {
 
-		//TODO
+		Document doc = null;
+		String garbage[];
 		
-		return "todo";
+		
+		try {
+			
+			doc = Jsoup.connect(url).timeout(60000).get();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Elements  list = doc.getElementsByTag("div");
+			
+		
+		//Get Synopsis			
+		garbage = list.toString().split("synopsis-txt\" itemprop=\"description\">");
+		garbage = garbage[1].toString().split(" </div>");
+		garbage = garbage[0].toString().split("\n         ");
+		garbage[1] = garbage[1].replace("\n       ", "");
+		garbage[1] = garbage[1].replace("  ", " ");
+		garbage[1] = garbage[1].replace("<i>", "");
+		garbage[1] = garbage[1].replace("</i>", "");
+		garbage[1] = garbage[1].replace("<br>", "");
+		garbage[1] = garbage[1].replace("</br>", "");
+		
+		return garbage[1];
+		
+	}
+	
+	public static String getCast(String url) {
+
+		Document doc = null;
+		String garbage[], actors[], returnString="";
+		
+		
+		try {
+			
+			doc = Jsoup.connect(url).timeout(60000).get();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+			Elements  list = doc.getElementsByTag("div");
+			
+		
+		//Get Cast
+		try{
+			garbage = list.toString().split("<span class=\"light\">Avec</span>");
+			garbage = garbage[1].toString().split("</div>");
+			garbage = garbage[0].toString().split("class=\"blue-link\">");	
+			actors = garbage[1].toString().split("</span>");	
+			returnString = actors[0];
+			actors = garbage[2].toString().split("</span>");
+			returnString += ", " + actors[0];
+			actors = garbage[3].toString().split("</span>");
+			returnString += ", " + actors[0];
+		}catch (ArrayIndexOutOfBoundsException  e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
+		return returnString;
+		
 	}
 	
 	public static String getStars(String titreSearch) {
@@ -203,6 +361,37 @@ public class AlloParser {
 		
 		return "todo";
 	}
+
+	
+	public static String getUrlPicture(String url) {
+
+		Document doc = null;
+		String garbage[];
+		
+		
+		try {
+			
+			doc = Jsoup.connect(url).timeout(60000).get();
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Elements  list = doc.getElementsByTag("meta");
+		
+	
+		//Get Image URL			
+		garbage = list.toString().split("property=\"og:image\" content=\"");
+		garbage = garbage[1].toString().split("\"");
+		
+		return garbage[0];		
+	}	
+	
+	
+
+	
 	
 	public static String getVersion(String titreSearch) {
 
@@ -210,5 +399,14 @@ public class AlloParser {
 		
 		return "todo";
 	}
+	
+	
+
+	
+	
+	public static String removeAccent(String source) {
+		return Normalizer.normalize(source, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
+	}
+	
 	
 }

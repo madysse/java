@@ -12,7 +12,10 @@ public class Main {
 		
 		String urlFilm;
 		
-		urlFilm = AlloParser.getUrl("Jurassic World 2");
+		//urlFilm = AlloParser.getUrl("Les ripoux");
+		//urlFilm = AlloParser.getUrl("Jurassic Park");
+		//urlFilm = AlloParser.getUrl("Inception");
+		urlFilm = AlloParser.getUrl("Avatar");
 		
 		
 		AlloParser.getInfo(urlFilm);
@@ -20,8 +23,11 @@ public class Main {
 		//getInfo("http://www.allocine.fr/film/fichefilm_gen_cfilm=143692.html");
 			
 		  
+		System.out.println("Director: "+ AlloParser.getDirector(urlFilm));
 
-		AlloParser.getDirector(urlFilm);
+		System.out.println("Casts: "+ AlloParser.getCast(urlFilm));
+		System.out.println("Resumé: "+ AlloParser.getSynopsis(urlFilm));
+		System.out.println("Url Image: "+ AlloParser.getUrlPicture(urlFilm));
 		
 	}
 	
