@@ -188,7 +188,7 @@ public class voteDVD  {
 	public static void formatInputFile(String[] args){
 		
 		String inputFile;	
-		String titreFilm, realActeurs, lienImage, resume;
+		String titreFilm, realActeurs, lienImage, resume, urlFilm;
 		
 		System.out.println("Online");
 
@@ -214,8 +214,11 @@ public class voteDVD  {
 				//Boucle sur l'ensemble des films que contient le fichier
 				while((titreFilm = br.readLine()) != null) 
 	            {
-						
-					//outputFile.print(titreFilm + " (" + AlloParser.getYear(url) + ") - " + AlloParser.getGenre(url));
+					urlFilm = AlloParser.getUrl(titreFilm);
+					
+					aMovie currentMovie = AlloParser.getInfo(urlFilm);
+
+					outputFile.print(titreFilm + " (" + currentMovie.year + ") - " + currentMovie.genrer + "\n");
 					
 					
 					flagBlueRay=false;
@@ -225,25 +228,6 @@ public class voteDVD  {
 				
 				
 
-				outputFile.print("</TABLE>\n");
-				outputFile.print("</CENTER>\n");
-				outputFile.print("<br><input type=\"submit\" value=\"Envoyez vos choix\">   <br> N'hésitez pas, pendant les sessions, à nous soumettre des idées de DVD pour les prochains votes.<br>\n");
-				outputFile.print("</div></form>\n");
-				outputFile.print("<br><hr><br>\n");
-				outputFile.print("<form name=\"erase\"action=\"mailto:CE.DVD@oberthurcs.com?subject=Delete\">\n");
-				outputFile.print("Si vous ne souhaitez plus recevoir ce genre de message, vous pouvez nous le faire savoir en cliquant sur le bouton:<br><br>\n");
-				outputFile.print("<input type=\"submit\" value=\"Supprimez moi de la liste de diffusion\">\n");
-				outputFile.print("</form>\n");
-				outputFile.print("<FORM name=suggestion action=mailto:CE.DVD@oberthurcs.com?subject=Suggestion>\n");
-				outputFile.print("Pour des compléments d'information:\n");
-				outputFile.print("<BR>\n");
-				outputFile.print("<BR>\n");
-				outputFile.print("<INPUT type=submit value=\"Demande d'information\">\n");
-				outputFile.print("<BR><BR><BR><BR>\n");
-				outputFile.print("</FORM>\n");
-				outputFile.print("</BODY>\n");
-				outputFile.print("</HTML>\n");
-								
 
 				outputFile.flush();
 				br.close();
@@ -260,13 +244,47 @@ public class voteDVD  {
 		
 	}
 	
-	public class aMovie{
+	public static class aMovie{
 		
-		public aMovie() {
-			super();
-			// TODO Auto-generated constructor stub
-		}
+
 		public String title;
+		public String year;
+		public String genre;
+		public String director;
+		public String casts;
+		public String urlImage;
+		public String resume;
+		public String starsPress;
+		public String starsPeople;
+		
+		public aMovie(String title, String year, String genre, String director, String casts, String urlImage, String resume, String starsPress, String starsPeople) {
+
+			this.title = title;
+			this.year = year;
+			this.genre = genre;
+			this.director = director;
+			this.casts = casts;
+			this.urlImage = urlImage;
+			this.resume = resume;
+			this.starsPress = starsPress;
+			this.starsPeople = starsPeople;
+			
+		}
+
+		public aMovie() {
+
+			this.title = "";
+			this.year = "";
+			this.genre = "";
+			this.director = "";
+			this.casts = "";
+			this.urlImage = "";
+			this.resume = "";
+			this.starsPress = "";
+			this.starsPeople = "";
+			
+		}
+		
 		public String getTitle() {
 			return title;
 		}
@@ -308,13 +326,24 @@ public class voteDVD  {
 		}
 		public void setResume(String resume) {
 			this.resume = resume;
+		}		
+		public String getStarsPress() {
+			return starsPress;
 		}
-		public String year;
-		public String genre;
-		public String director;
-		public String casts;
-		public String urlImage;
-		public String resume;
+		public void setStarsPress(String starsPress) {
+			this.starsPress = starsPress;
+		}
+		public String getStarsPeople() {
+			return starsPeople;
+		}
+		public void setStarsPeople(String starsPeople) {
+			this.starsPeople = starsPeople;
+		}
+		
+
+		
+		
+
 	}
 	
 	

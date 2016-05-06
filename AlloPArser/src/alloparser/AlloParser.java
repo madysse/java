@@ -10,6 +10,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import VoteDVD.voteDVD;
 import VoteDVD.voteDVD.aMovie;
 
 
@@ -98,12 +99,16 @@ public class AlloParser {
 	
 	
 	
-	public static aMovie getInfo(String url) {
+	public static voteDVD.aMovie getInfo(String url) {
 	
 
 		Document doc = null;
 		String garbage[], actors[];
-		aMovie thisMovie = null;
+		aMovie thisMovie = new aMovie();
+		
+		String returnString = " ";
+		String returnStarsPress = "NC";
+		String returnStarsPeople = "NC";
 		
 		
 		try {
@@ -117,14 +122,11 @@ public class AlloParser {
 		}
 		
 
-
 			Elements  list = doc.getElementsByTag("meta");
 			Elements  list2 = doc.getElementsByTag("div");
-			
-			
+						
 			//System.out.println("Meta: "+ list.toString() + "\n");
 			//System.out.println("Div: "+ list2.toString() + "\n");
-
 
 			//Get Title			
 			garbage = list.toString().split("<meta property=\"og:title\" content=\"");
@@ -135,18 +137,20 @@ public class AlloParser {
 			//Get Director			
 			garbage = list.toString().split("<meta property=\"video:director\" content=\"");
 			garbage = garbage[1].toString().split("\"");
-			System.out.println("Realisateur: "+ garbage[0] + "\n");
+			//System.out.println("Realisateur: "+ garbage[0] + "\n");
 			thisMovie.setDirector(garbage[0]);
 			
 			//Get Genre			
 			garbage = list2.toString().split("==\"><span itemprop=\"genre\">");
 			garbage = garbage[1].toString().split("</");
-			System.out.println("Genre: "+ garbage[0] + "\n");
+			//System.out.println("Genre: "+ garbage[0] + "\n");
+			thisMovie.setGenre(garbage[0]);
 			
 			//Get Year			
 			garbage = list2.toString().split("<span class=\"that\">");
 			garbage = garbage[1].toString().split("</");
-			System.out.println("Année: "+ garbage[0] + "\n");
+			//System.out.println("Année: "+ garbage[0] + "\n");
+			thisMovie.setYear(garbage[0]);
 						
 			//Get Synopsis			
 			garbage = list2.toString().split("synopsis-txt\" itemprop=\"description\">");
@@ -158,30 +162,34 @@ public class AlloParser {
 			garbage[1] = garbage[1].replace("</i>", "");
 			garbage[1] = garbage[1].replace("<br>", "");
 			garbage[1] = garbage[1].replace("</br>", "");
-			System.out.println("Resumé: "+ garbage[1] + "\n");
+			//System.out.println("Resumé: "+ garbage[1] + "\n");
+			thisMovie.setResume(garbage[0]);
+			
 			
 			//Get Image URL			
 			garbage = list.toString().split("property=\"og:image\" content=\"");
 			garbage = garbage[1].toString().split("\"");
-			System.out.println("Image: "+ garbage[0] + "\n");
+			//System.out.println("Image: "+ garbage[0] + "\n");
+			thisMovie.setUrlImage(garbage[0]);
 
 			
 			//Get Cast
 			try{
-				garbage = list2.toString().split("<span class=\"light\">Avec</span>");
+				garbage = list.toString().split("<span class=\"light\">Avec</span>");
 				garbage = garbage[1].toString().split("</div>");
 				garbage = garbage[0].toString().split("class=\"blue-link\">");	
 				actors = garbage[1].toString().split("</span>");	
-				System.out.println("Acteur: "+ actors[0]);
+				returnString = actors[0];
 				actors = garbage[2].toString().split("</span>");
-				System.out.println(", "+ actors[0]);
+				returnString += ", " + actors[0];
 				actors = garbage[3].toString().split("</span>");
-				System.out.println(", "+ actors[0]);
+				returnString += ", " + actors[0];
 			}catch (ArrayIndexOutOfBoundsException  e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
 			
+			thisMovie.setCasts(returnString);
 			
 			//Get STARS !!!! TODO	
 
@@ -189,21 +197,22 @@ public class AlloParser {
 				//Press
 				garbage = list2.toString().split("<span class=\"stareval-note\">");
 				garbage = garbage[1].toString().split("</span>");
-				System.out.println("Stars Press: "+ garbage[0]);
+				//System.out.println("Stars Press: "+ garbage[0]);
+				returnStarsPress = garbage[0];
 				//Spectators
 				garbage = list2.toString().split("<span class=\"stareval-note\" itemprop=\"ratingValue\" content=\"");
 				garbage = garbage[1].toString().split("\">");
-				System.out.println("Stars Spectators: "+ garbage[0]);
+				//System.out.println("Stars Spectators: "+ garbage[0]);
+				returnStarsPeople = garbage[0];
 			}catch (ArrayIndexOutOfBoundsException  e) {
 				// TODO Auto-generated catch block
-				System.out.println("No Stars");
+				//System.out.println("No Stars");
 			}
-			 
-			//test
+			thisMovie.setStarsPress(returnStarsPress);
+			thisMovie.setStarsPeople(returnStarsPeople);
 			
-			
-			 return thisMovie;
-	
+					
+			 return thisMovie;	
 	}
 	
 	public static String getYear(String url) {
@@ -366,7 +375,6 @@ public class AlloParser {
 		
 		return "todo";
 	}
-
 	
 	public static String getUrlPicture(String url) {
 
@@ -393,22 +401,14 @@ public class AlloParser {
 		
 		return garbage[0];		
 	}	
-	
-	
-
-	
-	
+		
 	public static String getVersion(String titreSearch) {
 
 		//TODO
 		
 		return "todo";
 	}
-	
-	
-
-	
-	
+		
 	public static String removeAccent(String source) {
 		return Normalizer.normalize(source, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
 	}
