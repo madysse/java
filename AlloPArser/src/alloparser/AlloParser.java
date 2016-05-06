@@ -10,6 +10,8 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import VoteDVD.voteDVD.aMovie;
+
 
 public class AlloParser {
    
@@ -96,11 +98,12 @@ public class AlloParser {
 	
 	
 	
-	public static void getInfo(String url) {
+	public static aMovie getInfo(String url) {
 	
 
 		Document doc = null;
 		String garbage[], actors[];
+		aMovie thisMovie = null;
 		
 		
 		try {
@@ -126,12 +129,14 @@ public class AlloParser {
 			//Get Title			
 			garbage = list.toString().split("<meta property=\"og:title\" content=\"");
 			garbage = garbage[1].toString().split("\"");
-			System.out.println("Film: "+ garbage[0] + "\n");
+			//System.out.println("Film: "+ garbage[0] + "\n");
+			thisMovie.setTitle(garbage[0]);
 
 			//Get Director			
 			garbage = list.toString().split("<meta property=\"video:director\" content=\"");
 			garbage = garbage[1].toString().split("\"");
 			System.out.println("Realisateur: "+ garbage[0] + "\n");
+			thisMovie.setDirector(garbage[0]);
 			
 			//Get Genre			
 			garbage = list2.toString().split("==\"><span itemprop=\"genre\">");
@@ -197,7 +202,7 @@ public class AlloParser {
 			//test
 			
 			
-			 
+			 return thisMovie;
 	
 	}
 	
