@@ -47,7 +47,7 @@ public class AlloParser {
 		
 		titre = titreSearch;
 		titreFirstElement = titre.split(" ");
-		System.out.println("Titre: "+ titre);
+		//System.out.println("Titre: "+ titre);
 		//replace space by + for search bar 
 		titreSearch = removeAccent(titreSearch);
 		titreSearch = titreSearch.replace(" ", "+");
@@ -57,17 +57,23 @@ public class AlloParser {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		System.out.println("titreSearch: "+ titreSearch);
-		System.out.println("titreFirstElement: "+ titreFirstElement[0]);
+		//System.out.println("titreSearch: "+ titreSearch);
+		//System.out.println("titreFirstElement: "+ titreFirstElement[0]);
 		
 		//Configure url of the film that we looking for on Allocine webpage
 		String urlSearch = "http://www.allocine.fr/recherche/?q=" + titreSearch;
 		String urlFound;
-		System.out.println("Url: "+ urlSearch);
+		//System.out.println("Url: "+ urlSearch);
 		
+		
+		/////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////   PROXY   ///////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////
 		//Set Proxy parameters Oberthur (see at end of http://wpad/wpad.dat)
-		System.setProperty("http.proxyHost", "10.200.128.20");
-	    System.setProperty("http.proxyPort", "8080");
+		//atWork();
+		/////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////   PROXY   ///////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////////		
 		
 		try {
 			
@@ -152,18 +158,26 @@ public class AlloParser {
 			//System.out.println("Année: "+ garbage[0] + "\n");
 			thisMovie.setYear(garbage[0]);
 						
-			//Get Synopsis			
-			garbage = list2.toString().split("synopsis-txt\" itemprop=\"description\">");
-			garbage = garbage[1].toString().split(" </div>");
-			garbage = garbage[0].toString().split("\n         ");
-			garbage[1] = garbage[1].replace("\n       ", "");
-			garbage[1] = garbage[1].replace("  ", " ");
-			garbage[1] = garbage[1].replace("<i>", "");
-			garbage[1] = garbage[1].replace("</i>", "");
-			garbage[1] = garbage[1].replace("<br>", "");
-			garbage[1] = garbage[1].replace("</br>", "");
-			//System.out.println("Resumé: "+ garbage[1] + "\n");
-			thisMovie.setResume(garbage[0]);
+			//Get Synopsis		
+			try{	
+				garbage = list2.toString().split("synopsis-txt\" itemprop=\"description\">");
+				garbage = garbage[1].toString().split(" </div>");
+				garbage = garbage[0].toString().split("\n         ");
+				garbage[1] = garbage[1].replace("\n       ", "");
+				garbage[1] = garbage[1].replace("  ", " ");
+				garbage[1] = garbage[1].replace("<i>", "");
+				garbage[1] = garbage[1].replace("</i>", "");
+				garbage[1] = garbage[1].replace("<br>", "");
+				garbage[1] = garbage[1].replace("</br>", "");
+				garbage[1] = garbage[1].replace("\n", "");
+				returnString = "No Synopsis";
+				returnString = garbage[1];
+				//System.out.println("Resumé: "+ garbage[1] + "\n");
+			}catch (ArrayIndexOutOfBoundsException  e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+			thisMovie.setResume(returnString);
 			
 			
 			//Get Image URL			
@@ -175,7 +189,7 @@ public class AlloParser {
 			
 			//Get Cast
 			try{
-				garbage = list.toString().split("<span class=\"light\">Avec</span>");
+				garbage = list2.toString().split("<span class=\"light\">Avec</span>");
 				garbage = garbage[1].toString().split("</div>");
 				garbage = garbage[0].toString().split("class=\"blue-link\">");	
 				actors = garbage[1].toString().split("</span>");	
@@ -184,11 +198,12 @@ public class AlloParser {
 				returnString += ", " + actors[0];
 				actors = garbage[3].toString().split("</span>");
 				returnString += ", " + actors[0];
+				//System.out.println("Casts: "+ returnString + "\n");
 			}catch (ArrayIndexOutOfBoundsException  e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
-			
+
 			thisMovie.setCasts(returnString);
 			
 			//Get STARS !!!! TODO	
@@ -197,11 +212,14 @@ public class AlloParser {
 				//Press
 				garbage = list2.toString().split("<span class=\"stareval-note\">");
 				garbage = garbage[1].toString().split("</span>");
-				//System.out.println("Stars Press: "+ garbage[0]);
+
+				//Clean some extra unecessary caraters				
+				garbage[0] = garbage[0].replace(" ", "");
 				returnStarsPress = garbage[0];
 				//Spectators
 				garbage = list2.toString().split("<span class=\"stareval-note\" itemprop=\"ratingValue\" content=\"");
 				garbage = garbage[1].toString().split("\">");
+				garbage[0] = garbage[0].replace("  ", " ");
 				//System.out.println("Stars Spectators: "+ garbage[0]);
 				returnStarsPeople = garbage[0];
 			}catch (ArrayIndexOutOfBoundsException  e) {
@@ -319,6 +337,8 @@ public class AlloParser {
 		garbage = list.toString().split("synopsis-txt\" itemprop=\"description\">");
 		garbage = garbage[1].toString().split(" </div>");
 		garbage = garbage[0].toString().split("\n         ");
+		
+		//Clean some extra unecessary caraters
 		garbage[1] = garbage[1].replace("\n       ", "");
 		garbage[1] = garbage[1].replace("  ", " ");
 		garbage[1] = garbage[1].replace("<i>", "");
@@ -413,5 +433,13 @@ public class AlloParser {
 		return Normalizer.normalize(source, Normalizer.Form.NFD).replaceAll("[\u0300-\u036F]", "");
 	}
 	
+
+	public static void atWork() {
+		
+		System.setProperty("http.proxyHost", "10.200.128.20");
+	    System.setProperty("http.proxyPort", "8080");
+		
+	}
+		
 	
 }

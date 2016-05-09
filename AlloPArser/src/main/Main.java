@@ -16,7 +16,8 @@ public class Main {
 		//urlFilm = AlloParser.getUrl("Les ripoux");
 		//urlFilm = AlloParser.getUrl("Jurassic Park");
 		//urlFilm = AlloParser.getUrl("Inception");
-		//urlFilm = AlloParser.getUrl("Avatar");
+		urlFilm = AlloParser.getUrl("Avatar");
+		//urlFilm = AlloParser.getUrl("UN SAC DE BILLES");
 		
 		
 		//AlloParser.getInfo(urlFilm);
