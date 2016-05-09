@@ -72,7 +72,8 @@ public class voteDVD  {
 				int i=0;
 				
 				//Boucle sur l'ensemble des films que contient le fichier
-				while((titreAnneeGenre = br.readLine()) != null) 
+           //Loop on all movies present in the file
+           while((titreAnneeGenre = br.readLine()) != null) 
 	            {
 					if((realActeurs = br.readLine()) == null) 
 						return;
@@ -130,7 +131,7 @@ public class voteDVD  {
 					outputFile.print("<TR>\n");
 					outputFile.print(stringCouleur);
 					outputFile.print("<U>\n");
-					outputFile.print("Résumé:\n");
+					outputFile.print("RÃ©sumÃ©:\n");
 					outputFile.print("</TD></U>\n");
 					outputFile.print(stringCouleur);
 					
@@ -151,7 +152,7 @@ public class voteDVD  {
 
 				outputFile.print("</TABLE>\n");
 				outputFile.print("</CENTER>\n");
-				outputFile.print("<br><input type=\"submit\" value=\"Envoyez vos choix\">   <br> N'hésitez pas, pendant les sessions, à nous soumettre des idées de DVD pour les prochains votes.<br>\n");
+				outputFile.print("<br><input type=\"submit\" value=\"Envoyez vos choix\">   <br> N'hÃ©sitez pas, pendant les sessions, Ã  nous soumettre des idÃ©es de DVD pour les prochains votes.<br>\n");
 				outputFile.print("</div></form>\n");
 				outputFile.print("<br><hr><br>\n");
 				outputFile.print("<form name=\"erase\"action=\"mailto:CE.DVD@oberthurcs.com?subject=Delete\">\n");
@@ -159,7 +160,7 @@ public class voteDVD  {
 				outputFile.print("<input type=\"submit\" value=\"Supprimez moi de la liste de diffusion\">\n");
 				outputFile.print("</form>\n");
 				outputFile.print("<FORM name=suggestion action=mailto:CE.DVD@oberthurcs.com?subject=Suggestion>\n");
-				outputFile.print("Pour des compléments d'information:\n");
+				outputFile.print("Pour des complÃ©ments d'information:\n");
 				outputFile.print("<BR>\n");
 				outputFile.print("<BR>\n");
 				outputFile.print("<INPUT type=submit value=\"Demande d'information\">\n");
@@ -174,12 +175,12 @@ public class voteDVD  {
 				outputFile.close();
 				
 	    } catch (FileNotFoundException e) {
-			//Cette exception est levée 
+			//Cette exception est levÃ©e 
 			//si l'objet FileInputStream ne trouve aucun fichier
 	        e.printStackTrace();
 	    } catch (IOException e) {
 	    	//Celle-ci se produit lors d'une erreur
-	    	//d'écriture ou  de lecture
+	    	//d'Ã©criture ou  de lecture
 	        e.printStackTrace();}
 		
 	}
@@ -234,12 +235,12 @@ public class voteDVD  {
 				outputFile.close();
 				
 	    } catch (FileNotFoundException e) {
-			//Cette exception est levée 
+			//Cette exception est levÃ©e 
 			//si l'objet FileInputStream ne trouve aucun fichier
 	        e.printStackTrace();
 	    } catch (IOException e) {
 	    	//Celle-ci se produit lors d'une erreur
-	    	//d'écriture ou  de lecture
+	    	//d'Ã©criture ou  de lecture
 	        e.printStackTrace();}
 		
 	}
