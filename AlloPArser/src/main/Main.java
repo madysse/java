@@ -33,6 +33,8 @@ public class Main {
 		
 		voteDVD.makeVote(args);
 		
+		voteDVD.generateHTML("filmsFormat.txt");
+		
 		
 	}
 	

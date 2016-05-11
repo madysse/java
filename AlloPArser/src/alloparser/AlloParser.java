@@ -63,14 +63,14 @@ public class AlloParser {
 		//Configure url of the film that we looking for on Allocine webpage
 		String urlSearch = "http://www.allocine.fr/recherche/?q=" + titreSearch;
 		String urlFound;
-		//System.out.println("Url: "+ urlSearch);
+		System.out.println("Url: "+ urlSearch);
 		
 		
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////   PROXY   ///////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////
 		//Set Proxy parameters Oberthur (see at end of http://wpad/wpad.dat)
-		//atWork();
+		atWork();
 		/////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////   PROXY   ///////////////////////////////////
 		/////////////////////////////////////////////////////////////////////////////		
@@ -133,6 +133,7 @@ public class AlloParser {
 						
 			//System.out.println("Meta: "+ list.toString() + "\n");
 			//System.out.println("Div: "+ list2.toString() + "\n");
+			//System.out.println("url: "+ url + "\n");
 
 			//Get Title			
 			garbage = list.toString().split("<meta property=\"og:title\" content=\"");
@@ -153,12 +154,14 @@ public class AlloParser {
 			thisMovie.setGenre(garbage[0]);
 			
 			//Get Year			
-			garbage = list2.toString().split("<span class=\"that\">");
+			garbage = list2.toString().split("Année de production");
+			garbage = garbage[1].toString().split("<span class=\"that\">");
 			garbage = garbage[1].toString().split("</");
 			//System.out.println("Année: "+ garbage[0] + "\n");
 			thisMovie.setYear(garbage[0]);
 						
 			//Get Synopsis		
+			returnString = "No Synopsis";
 			try{	
 				garbage = list2.toString().split("synopsis-txt\" itemprop=\"description\">");
 				garbage = garbage[1].toString().split(" </div>");
@@ -170,7 +173,6 @@ public class AlloParser {
 				garbage[1] = garbage[1].replace("<br>", "");
 				garbage[1] = garbage[1].replace("</br>", "");
 				garbage[1] = garbage[1].replace("\n", "");
-				returnString = "No Synopsis";
 				returnString = garbage[1];
 				//System.out.println("Resumé: "+ garbage[1] + "\n");
 			}catch (ArrayIndexOutOfBoundsException  e) {
@@ -253,7 +255,8 @@ public class AlloParser {
 			Elements  list2 = doc.getElementsByTag("div");
 			
 			//Get Year			
-			garbage = list2.toString().split("<span class=\"that\">");
+			garbage = list2.toString().split("Année de production");
+			garbage = garbage[1].toString().split("<span class=\"that\">");
 			garbage = garbage[1].toString().split("</");
 			return garbage[0];
 
