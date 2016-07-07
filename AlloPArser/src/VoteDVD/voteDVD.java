@@ -27,6 +27,8 @@ public class voteDVD  {
 		
 		String inputFile;	
 		String titreFilm, urlFilm;
+		boolean flagBlueRay=false;
+		String stringTemp[];
 		
 		System.out.println("Online");
 
@@ -48,15 +50,30 @@ public class voteDVD  {
 	            {
 
 					System.out.println(titreFilm + " processing");
+					//Check Title candidate for BluRay purchasing
+					if(titreFilm.endsWith("/BLURAY"))
+					{
+						flagBlueRay=true;
+						stringTemp = titreFilm.split(" /BLURAY");	
+						titreFilm = stringTemp[0];
+					}
+						
+					
+
 					urlFilm = AlloParser.getUrl(titreFilm);
 					
 					aMovie currentMovie = AlloParser.getInfo(urlFilm);
 
-					outputFile.print(currentMovie.title + " (" + currentMovie.year + ") - " + currentMovie.genre + "\n");
+					if(flagBlueRay)
+						outputFile.print(currentMovie.title + " (" + currentMovie.year + ") - " + currentMovie.genre + " /BLURAY\n");
+					else
+						outputFile.print(currentMovie.title + " (" + currentMovie.year + ") - " + currentMovie.genre + "\n");						
 					outputFile.print("Réalisateurs "  + currentMovie.director + ", Acteurs " + currentMovie.casts + "\n");
 					outputFile.print(currentMovie.urlImage + "\n");
 					outputFile.print(currentMovie.resume + "\n");
 					outputFile.print(currentMovie.starsPress + " - " + currentMovie.starsPeople + "\n");
+					
+					flagBlueRay=false;
 	            }
 				
 				outputFile.flush();
@@ -146,11 +163,11 @@ public class voteDVD  {
 						stringCouleur="<TD bgcolor=\"#FFF488\">\n";
 					}
 					
-					if(titreAnneeGenre.endsWith("DVD_BLUERAY"))
+					if(titreAnneeGenre.endsWith("/BLURAY"))
 					{
 						flagBlueRay=true;
 						
-						stringTemp = titreAnneeGenre.split("DVD_BLUERAY");
+						stringTemp = titreAnneeGenre.split("/BLURAY");
 						
 						titreAnneeGenre = stringTemp[0];
 					}
@@ -159,7 +176,7 @@ public class voteDVD  {
 					outputFile.print("<TR>\n");
 					outputFile.print(stringCouleur);
 					outputFile.print("<CENTER>\n");
-					outputFile.print("<IMG SRC=\"http://ce-dvd.nanterre.oberthurcs.com/sondage_cedvd/Vote_2009_04/ACC_pan.gif\">\n");
+					outputFile.print("<IMG SRC=\"http://ce-dvd.nanterre.oberthurcs.com/sondage_cedvd/panier.png\">\n");
 					if(i==0)
 						outputFile.print("<input type=\"checkbox\" name=\"h"+i+"\" value=\"h"+i+"\" > \n");
 					else
@@ -263,6 +280,7 @@ public class voteDVD  {
 		public String casts;
 		public String urlImage;
 		public String resume;
+		public String blurayNeeded;
 		public String starsPress;
 		public String starsPeople;
 		
